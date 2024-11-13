@@ -18,7 +18,6 @@ def nw_parse_from_xls(path: str) -> BatData:
             ).set_index("Cycle")
 
         elif "Statis" in i:
-            print(i, v.columns, "s")
             dfs = v.rename(
                 columns={
                     "循环": "Cycle",
@@ -31,7 +30,7 @@ def nw_parse_from_xls(path: str) -> BatData:
                     "起始电流(mA)": "StartCurrent",
                     "结束电流(mA)": "EndCurrent",
                 }
-            )
+            ).set_index('Cycle')
 
         elif "Detail" in i:
             dfd = v.rename(
@@ -48,6 +47,6 @@ def nw_parse_from_xls(path: str) -> BatData:
                     "相对时间(h:min:s.ms)": "RelativeTime",
                     "绝对时间(h:min:s.ms)": "AbsoluteTime",
                 }
-            )
+            ).set_index('Step')
 
     return BatData(dfc, dfd, dfs, path)
