@@ -24,13 +24,14 @@ def nw_parse_from_xls(path: str) -> BatData:
                     "通道": "Channel",
                     "步次": "Step",
                     "原始步次": "OriginalStep",
-                    "状态": "Status",
+                    "状态": "Status",                    "容量(mAh)": "Capacity",
+
                     "起始电压(V)": "StartVoltage",
                     "结束电压(V)": "EndVoltage",
                     "起始电流(mA)": "StartCurrent",
                     "结束电流(mA)": "EndCurrent",
                 }
-            ).set_index('Cycle')
+            )
 
         elif "Detail" in i:
             dfd = v.rename(
