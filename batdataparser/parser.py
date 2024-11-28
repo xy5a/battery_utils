@@ -31,7 +31,7 @@ def nw_parse_from_xls(path: str) -> BatData:
                     "起始电流(mA)": "StartCurrent",
                     "结束电流(mA)": "EndCurrent",
                 }
-            )
+            ).set_index("Cycle")
 
         elif "Detail" in i:
             dfd = v.rename(
