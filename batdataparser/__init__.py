@@ -57,12 +57,10 @@ class BatData:
 
     def plot_rate(self) -> ggplot:
 
-        self.statis["CRate"] = (
-            self.statis["AvgmCurrent"] / self.statis["Capacity"].max()
-        )
+        self.statis["MCurrent"] = self.statis["AvgmCurrent"]
 
-        self.statis["CRate"] = (
-            self.statis["CRate"]
+        self.statis["MCurrent"] = (
+            self.statis["MCurrent"]
             .fillna(0)
             .apply(
                 lambda x: f"${0 if x == 0 else round(abs(x), -floor(log10(abs(x))) + 1):10.1f}C$"
@@ -71,24 +69,24 @@ class BatData:
 
         dc = self.statis[self.statis["Status"] == "恒流放电"].copy()
         dc["cycle"] = range(dc.shape[0])
-        tagd = dc[["CRate", "Capacity", "cycle"]].copy()
-        tagd["g"] = (tagd["CRate"] != tagd["CRate"].shift()).cumsum()
+        tagd = dc[["MCurrent", "Capacity", "cycle"]].copy()
+        tagd["g"] = (tagd["MCurrent"] != tagd["MCurrent"].shift()).cumsum()
         tagd = (
             tagd.groupby("g")
-            .agg({"CRate": "first", "Capacity": "mean", "cycle": "median"})
+            .agg({"MCurrent": "first", "Capacity": "mean", "cycle": "median"})
             .reset_index(drop=True)
         )
 
         return (
-            ggplot()
+            ggplot(
+                dc, mapping=aes(y="Capacity", x=range(dc.shape[0]), color="MCurrent")
+            )
             + geom_point(
-                data=dc,
-                mapping=aes(y="Capacity", x=range(dc.shape[0]), color=dc["CRate"]),
                 show_legend=False,
             )
             + geom_text(
                 data=tagd,
-                mapping=aes(label="CRate", x="cycle", y="Capacity"),
+                mapping=aes(label="MCurrent", x="cycle", y="Capacity"),
                 adjust_text={
                     "expand": (0.1, 2),
                     "arrowprops": {"arrowstyle": "-", "color": "red"},
